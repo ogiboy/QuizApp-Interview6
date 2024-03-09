@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
-// import { FaArrowLeft } from 'react-icons/fa'
+import { FaArrowLeft } from 'react-icons/fa'
 
 const Quiz = ({ questions }) => {
   const scoreRef = useRef(null)
@@ -23,11 +23,11 @@ const Quiz = ({ questions }) => {
     setSelectedAnswer(id)
   }
 
-  // useEffect(() => {
-  //   console.log('selected: ' + selectedAnswer)
-  //   console.log('progress: ' + progress)
-  //   console.log('history: ' + answerHistory)
-  // }, [selectedAnswer, progress, answerHistory])
+  useEffect(() => {
+    console.log('selected: ' + selectedAnswer)
+    console.log('progress: ' + progress)
+    console.log('history: ' + answerHistory)
+  }, [selectedAnswer, progress, answerHistory])
 
   const handleOptions = (options) => {
     return options.map((option, index) => {
@@ -80,13 +80,13 @@ const Quiz = ({ questions }) => {
     setAnswerHistory((prevHistory) => [question.correct, ...prevHistory])
   }
 
-  // const handlePrevBtn = () => {
-  //   setProgress((prevProgress) => ({
-  //     ...prevProgress,
-  //     currentQuestion: prevProgress.currentQuestion - 1,
-  //   }))
-  //   setSelectedAnswer(answerHistory[progress.currentQuestion - 1])
-  // }
+  const handlePrevBtn = () => {
+    setProgress((prevProgress) => ({
+      ...prevProgress,
+      currentQuestion: prevProgress.currentQuestion - 1,
+    }))
+    setSelectedAnswer(answerHistory[progress.currentQuestion - 1])
+  }
 
   if (progress.currentQuestion === questions.length) {
     const percent = (progress.true / progress.currentQuestion) * 100
@@ -105,7 +105,6 @@ const Quiz = ({ questions }) => {
           </div>
         )}
       </div>
-
       <div>
         {questions.map((question, index) => {
           if (index !== progress.currentQuestion) return null
@@ -122,13 +121,18 @@ const Quiz = ({ questions }) => {
               {handleOptions(questions[index].answers)}
 
               <div className="w-4/5 flex justify-evenly mx-auto">
-                {/* <button
-                disabled={index === 0}
-                className={arrowBtnStyles}
-                onClick={() => handlePrevBtn(question)}
-              >
-                <FaArrowLeft />
-              </button> */}
+                <button
+                  disabled={index === 0}
+                  className={arrowBtnStyles}
+                  onClick={() => {
+                    handlePrevBtn(question)
+                    setAnswerHistory((prevHistory) => [
+                      ...(prevHistory = prevHistory.slice(1)),
+                    ])
+                  }}
+                >
+                  <FaArrowLeft />
+                </button>
                 <button
                   onClick={() => handleAnswer(question)}
                   className={arrowBtnStyles}
